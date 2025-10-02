@@ -1,0 +1,59 @@
+.modelPage {
+  min-height: 100vh;
+  padding: 2rem 5%;
+  color: white;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #61dafb, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: 1.2rem;
+  color: #b0b0d0;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+}
+
+.tab {
+  padding: 1rem 2rem;
+  background: transparent;
+  border: none;
+  color: #b0b0d0;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.tab.active {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+}
+
+.tabContent {
+  max-width: 1000px;
+  margin: 0 auto;
+}

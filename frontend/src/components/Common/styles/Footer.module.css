@@ -1,0 +1,77 @@
+.footer {
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3rem 5% 1rem;
+  margin-top: auto;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+.logo h3 {
+  color: #61dafb;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.logo p {
+  color: #b0b0d0;
+  line-height: 1.5;
+}
+
+.links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.linkGroup h4 {
+  color: white;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.linkGroup a {
+  display: block;
+  color: #b0b0d0;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.linkGroup a:hover {
+  color: #61dafb;
+}
+
+.bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 2rem;
+  text-align: center;
+}
+
+.bottom p {
+  color: #888;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .links {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

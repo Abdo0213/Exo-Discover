@@ -1,0 +1,111 @@
+.landing {
+  min-height: 100vh;
+}
+
+.ctaSection {
+  padding: 100px 5%;
+  background: linear-gradient(135deg, #0f0f2d 0%, #1d1d42 50%, #2d1b4e 100%);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(97, 218, 251, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+}
+
+.ctaContainer {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ctaSection h2 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(45deg, #61dafb, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ctaSection p {
+  font-size: 1.3rem;
+  color: #b0b0d0;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ctaPrimary, .ctaSecondary {
+  padding: 1.2rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.ctaPrimary {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+}
+
+.ctaPrimary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+}
+
+.ctaSecondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.ctaSecondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .ctaSection {
+    padding: 60px 5%;
+  }
+  
+  .ctaSection h2 {
+    font-size: 2.2rem;
+  }
+  
+  .ctaSection p {
+    font-size: 1.1rem;
+  }
+  
+  .ctaButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .ctaPrimary, .ctaSecondary {
+    width: 100%;
+    max-width: 300px;
+  }
+}

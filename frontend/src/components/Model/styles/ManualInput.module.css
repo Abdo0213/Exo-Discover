@@ -1,0 +1,137 @@
+.manualInput {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+}
+
+.datasetSelector {
+  margin-bottom: 2rem;
+}
+
+.datasetSelector label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #b0b0d0;
+  font-weight: 500;
+}
+
+.datasetSelector select {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 1rem;
+}
+
+.inputForm {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.inputForm h3 {
+  margin-bottom: 2rem;
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.inputGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup label {
+  margin-bottom: 0.5rem;
+  color: #b0b0d0;
+  font-weight: 500;
+}
+
+.inputGroup input {
+  padding: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #61dafb;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+}
+
+.predictBtn, .resetBtn {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.predictBtn {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+}
+
+.predictBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.resetBtn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.resetBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.helpText {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.helpText h4 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.helpText ul {
+  color: #b0b0d0;
+  list-style: none;
+  padding: 0;
+}
+
+.helpText li {
+  margin-bottom: 1rem;
+  padding-left: 0;
+  line-height: 1.5;
+}
+
+.helpText strong {
+  color: #61dafb;
+}

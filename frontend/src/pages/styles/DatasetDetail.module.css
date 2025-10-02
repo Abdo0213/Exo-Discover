@@ -1,0 +1,101 @@
+.datasetDetail {
+  min-height: 100vh;
+  padding: 2rem 5%;
+  color: white;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #61dafb, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: 1.2rem;
+  color: #b0b0d0;
+  line-height: 1.6;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.stat {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat h3 {
+  color: #61dafb;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.stat p, .stat ul {
+  color: #b0b0d0;
+}
+
+.stat ul {
+  list-style: none;
+  padding: 0;
+}
+
+.stat li {
+  margin-bottom: 0.5rem;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.stat li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #61dafb;
+}
+
+.graphs h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.graphPlaceholder {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.graph {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: #b0b0d0;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.graph:hover {
+  border-color: #61dafb;
+  background: rgba(97, 218, 251, 0.05);
+}

@@ -1,0 +1,154 @@
+.dataUpload {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+}
+
+.uploadArea {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.uploadArea h3 {
+  margin-bottom: 2rem;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.datasetSelector {
+  margin-bottom: 2rem;
+}
+
+.datasetSelector label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #b0b0d0;
+}
+
+.datasetSelector select {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.fileUpload {
+  margin-bottom: 2rem;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadBox {
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.uploadBox:hover {
+  border-color: #61dafb;
+  background: rgba(97, 218, 251, 0.05);
+}
+
+.fileInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #61dafb;
+}
+
+.uploadPrompt {
+  color: #b0b0d0;
+}
+
+.uploadPrompt small {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.uploadBtn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.uploadBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.uploadBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.trainingProgress {
+  margin-top: 1rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  animation: progress 3s ease-in-out infinite;
+}
+
+@keyframes progress {
+  0% { width: 0%; }
+  50% { width: 70%; }
+  100% { width: 100%; }
+}
+
+.requirements {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.requirements h4 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.requirements ul {
+  color: #b0b0d0;
+  list-style: none;
+  padding: 0;
+}
+
+.requirements li {
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.requirements li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #61dafb;
+}

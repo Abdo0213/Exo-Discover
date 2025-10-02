@@ -1,0 +1,118 @@
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 5%;
+  background: linear-gradient(135deg, #0f0f2d 0%, #1d1d42 50%, #2d1b4e 100%);
+  color: white;
+  min-height: 80vh;
+}
+
+.heroContent {
+  flex: 1;
+  max-width: 600px;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(45deg, #61dafb, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  margin-bottom: 2.5rem;
+  color: #b0b0d0;
+  line-height: 1.6;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 20px;
+}
+
+.primaryBtn, .secondaryBtn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primaryBtn {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+}
+
+.secondaryBtn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.primaryBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.secondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.heroVisual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.planetAnimation {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle at 30% 30%, #667eea, #764ba2, #0f0f2d);
+  border-radius: 50%;
+  position: relative;
+  animation: float 6s ease-in-out infinite;
+}
+
+.planetAnimation::before {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  filter: blur(10px);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 5%;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .planetAnimation {
+    width: 300px;
+    height: 300px;
+    margin-top: 40px;
+  }
+}

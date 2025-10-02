@@ -1,0 +1,16 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  flex: 1;
+  background: linear-gradient(135deg, #0c0c2e 0%, #1a1a3e 100%);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}

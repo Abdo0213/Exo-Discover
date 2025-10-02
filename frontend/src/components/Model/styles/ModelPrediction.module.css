@@ -1,0 +1,95 @@
+.modelPrediction {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modelInfo {
+  margin-bottom: 2rem;
+}
+
+.modelInfo h3 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.modelStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.stat {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+}
+
+.stat span:last-child {
+  color: #61dafb;
+  font-weight: bold;
+}
+
+.predictionResult {
+  margin-bottom: 2rem;
+}
+
+.predictionResult h3 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.result {
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 2px solid;
+}
+
+.planetarycandidate {
+  background: rgba(255, 152, 0, 0.1);
+  border-color: #ff9800;
+}
+
+.confirmedexoplanet {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: #4caf50;
+}
+
+.falsepositive {
+  background: rgba(244, 67, 54, 0.1);
+  border-color: #f44336;
+}
+
+.predictionLabel {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.confidence {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.predictBtn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.predictBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
