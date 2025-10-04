@@ -63,7 +63,7 @@ const DataUpload = () => {
   }; 
 
   return ( 
-    <div className={styles.dataUpload}> 
+    <div className={styles.manualInput}> 
       <div className={styles.uploadArea}> 
         <h3>Upload CSV Data for Prediction</h3> 
         <div className={styles.datasetSelector}>
