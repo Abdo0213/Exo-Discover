@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Common/Navbar';
 import Footer from './components/Common/Footer';
+import Chatbot from './components/Common/Chatbot';
 import Home from './pages/Home';
 import DatasetDetail from './pages/DatasetDetail';
 import ModelPage from './pages/ModelPage';
@@ -23,6 +24,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <Chatbot />
       </div>
     </Router>
   );

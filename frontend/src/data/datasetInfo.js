@@ -20,9 +20,9 @@ export const datasetInfo = {
       'Supports statistical population studies'
     ], 
     graphs: [
-      'discovery-methods',
-      'planet-radius-vs-period',
-      'stellar-properties'
+      '/kelper1.png',
+      '/kelper2.png',
+      '/kelper3.png'
     ] 
   }, 
 
@@ -48,9 +48,9 @@ export const datasetInfo = {
       'Extended Kepler’s mission despite hardware loss'
     ], 
     graphs: [
-      'campaign-fields',
-      'discovery-timeline',
-      'planet-types'
+      '/k21.png',
+      '/k22.png',
+      '/k23.png'
     ] 
   }, 
 
@@ -74,9 +74,9 @@ export const datasetInfo = {
       'Feeds confirmation pipeline and JWST targets'
     ], 
     graphs: [
-      'toi-growth',
-      'host-star-brightness',
-      'orbital-period-distribution'
-    ] 
+      '/tess1.png',
+      '/tess2.png',
+      '/tess3.png'
+    ]
   } 
 };

@@ -15,140 +15,12 @@ import seaborn as sns
 import warnings
 warnings.simplefilter(action='ignore', category=RuntimeWarning)
 
-#kelper = pd.read_csv('/kaggle/input/kepler-real-dataset/q1_q17_dr25_koi_2025.09.25_01.23.44.csv')
-kelper = pd.read_csv('/content/cumulative_2025.09.25_01.40.26.csv')
-kelper.head()
-
-kelper = kelper.fillna(kelper.mean(numeric_only=True))
-
-kelper.columns
-
-kelper['koi_disposition'].value_counts()
-
-kelper.info()
-
-kelper.describe().T
-
-kelper = kelper.drop(columns=['kepid','kepoi_name','kepler_name','koi_pdisposition','koi_score',
-                             'koi_period_err1','koi_time0bk_err2','koi_time0bk_err1','koi_time0bk_err2',
-                             'koi_impact_err1','koi_impact_err2','koi_duration_err1','koi_duration_err2'
-                             ,'koi_depth_err1','koi_depth_err2','koi_prad_err1','koi_prad_err2'
-                             ,'koi_teq_err1','koi_teq_err2','koi_insol_err1','koi_insol_err2',
-                             'koi_steff_err1','koi_steff_err2','koi_slogg_err1','koi_slogg_err2',
-                             'koi_srad_err1','koi_srad_err2','koi_tce_delivname'],axis=1)
-
-kelper.columns
-
-import pandas as pd
-import numpy as np
-from sklearn.preprocessing import StandardScaler
-
-X = kelper.drop('koi_disposition',axis=1)
-y = kelper["koi_disposition"]
-
-kelper["koi_disposition"].value_counts()
-
-kelper = kelper[kelper["koi_disposition"] != "FALSE POSITIVE"]
-
-kelper["koi_disposition"].value_counts()
-
-from sklearn.utils import resample
-
-confirmed = kelper[kelper["koi_disposition"] == "CONFIRMED"]
-candidate = kelper[kelper["koi_disposition"] == "CANDIDATE"]
-
-candidate_upsampled = resample(candidate,
-                               replace=True,
-                               n_samples=len(confirmed),
-                               random_state=42)
-
-kelper = pd.concat([confirmed, candidate_upsampled])
-
-print(kelper["koi_disposition"].value_counts())
-
-from sklearn.preprocessing import LabelEncoder
-
-le = LabelEncoder()
-y = le.fit_transform(y)
-
-import numpy as np
-
-print(np.unique(y))
-
-from sklearn.model_selection import train_test_split
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
-)
-
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score
-
-rf = RandomForestClassifier(n_estimators=200, random_state=42)
-rf.fit(X_train, y_train)
-
-y_pred_rf = rf.predict(X_test)
-print("Accuracy:", accuracy_score(y_test, y_pred_rf))
-print(classification_report(y_test, y_pred_rf, target_names=le.classes_))
-
-from xgboost import XGBClassifier
-from sklearn.metrics import accuracy_score, classification_report
-
-xgb = XGBClassifier(
-    n_estimators=500,
-    learning_rate=0.05,
-    max_depth=3,
-    subsample=0.8,
-    colsample_bytree=0.8,
-    eval_metric="mlogloss",
-    random_state=42
-)
-
-xgb.fit(X_train, y_train)
-y_pred_xgb = xgb.predict(X_test)
-
-print("XGBoost Accuracy:", accuracy_score(y_test, y_pred_xgb))
-print(classification_report(y_test, y_pred_xgb, target_names=le.classes_))
-
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def plot_conf_matrix(y_true, y_pred, model_name):
-    labels = [0,1,2]
-    cm = confusion_matrix(y_true, y_pred, labels=labels)
-    plt.figure(figsize=(6,4))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
-                xticklabels=labels,
-                yticklabels=labels)
-    plt.title(f"Confusion Matrix - {model_name}")
-    plt.xlabel("Predicted")
-    plt.ylabel("Actual")
-    plt.show()
-
-plot_conf_matrix(y_test, y_pred_rf, rf)
-plot_conf_matrix(y_test, y_pred_xgb, xgb)
 
 from sklearn.metrics import classification_report
-import pandas as pd
-
-report_rf  = classification_report(y_test, y_pred_rf, output_dict=True)
-report_xgb = classification_report(y_test, y_pred_xgb, output_dict=True)
-
-metrics = ['precision','recall','f1-score']
-classes = ['0','1','2']
-
-df_compare = pd.DataFrame({
-    'RandomForest_' + m: [report_rf[c][m] for c in classes] for m in metrics
-})
-for m in metrics:
-    df_compare['XGBoost_' + m] = [report_xgb[c][m] for c in classes]
-
-df_compare.index = classes
-print(df_compare.round(3))
-
-!pip install google-generativeai scikit-learn pandas joblib
-
 import pandas as pd
 import joblib
 import google.generativeai as genai
@@ -258,33 +130,6 @@ Here are the sample features again (for reference):
         raise RuntimeError(f"Gemini API call failed: {e}")
 
     return response.text
-
-# Example features dictionary (replace with your live example)
-example_features = {
-    'koi_fpflag_nt': 0,
-    'koi_fpflag_ss': 0,
-    'koi_fpflag_co': 0,
-    'koi_fpflag_ec': 0,
-    'koi_period': 12.5,
-    'koi_period_err2': 0.01,
-    'koi_time0bk': 2455000.0,
-    'koi_impact': 0.05,
-    'koi_duration': 2.5,
-    'koi_depth': 300,
-    'koi_prad': 1.1,
-    'koi_teq': 600,
-    'koi_insol': 1.2,
-    'koi_model_snr': 10,
-    'koi_tce_plnt_num': 1,
-    'koi_steff': 5600,
-    'koi_slogg': 4.5,
-    'koi_srad': 1.0,
-    'ra': 290.0,
-    'dec': 45.0,
-    'koi_kepmag': 13.5
-}
-
-print(chatbot_predict(example_features))
 
 # Cell 1
 import os

@@ -36,11 +36,16 @@ const DatasetDetail = () => {
 
       <div className={styles.graphs}>
         <h2>Data Analysis & Visualizations</h2>
+        <p className={styles.graphInfo}>
+          Interactive graphs and data visualizations will be displayed here
+        </p>
+
         <div className={styles.graphPlaceholder}>
-          <p>Interactive graphs and data visualizations will be displayed here</p>
-          <div className={styles.graph}>Planet Size Distribution</div>
-          <div className={styles.graph}>Orbital Period Histogram</div>
-          <div className={styles.graph}>Host Star Temperature vs Planet Radius</div>
+          {dataset.graphs?.map((src, index) => (
+            <div className={styles.graph} key={index}>
+              <img src={src} alt={`Graph ${index + 1}`} loading="lazy" />
+            </div>
+          ))}
         </div>
       </div>
     </div>

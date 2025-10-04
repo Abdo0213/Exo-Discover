@@ -21,16 +21,17 @@ const Footer = () => {
             
             <div className={styles.linkGroup}>
               <h4>Datasets</h4>
-              <a href="/dataset/kepler">Kepler Data</a>
-              <a href="/dataset/tess">TESS Data</a>
+              <a href="/dataset/cumulative">Kepler Data</a>
+              <a href="/dataset/toi">TESS Data</a>
               <a href="/dataset/k2">K2 Data</a>
             </div>
             
             <div className={styles.linkGroup}>
               <h4>Resources</h4>
-              <a href="https://exoplanetarchive.ipac.caltech.edu/">NASA Archive</a>
-              <a href="https://kepler.nasa.gov/">Kepler Mission</a>
-              <a href="https://tess.mit.edu/">TESS Mission</a>
+              <a href="https://exoplanetarchive.ipac.caltech.edu">NASA Archive</a>
+              <a href="https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?app=ExoTbls&config=cumulative">Kepler Mission</a>
+              <a href="https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?app=ExoTbls&config=TOI">TESS Mission</a>
+              <a href="https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?app=ExoTbls&config=k2pandc">K2 Mission</a>
             </div>
           </div>
         </div>

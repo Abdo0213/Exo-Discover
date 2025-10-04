@@ -135,3 +135,67 @@
 .helpText strong {
   color: #61dafb;
 }
+
+/* Prediction Result Styles */
+.predictionResult {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 2rem;
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.predictionResult h3 {
+  color: white;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.predictionCard {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.predictionInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.predictionInfo p {
+  margin: 0;
+  color: #b0b0d0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.predictionInfo strong {
+  color: #61dafb;
+  font-weight: 600;
+}
+
+.predictBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.predictBtn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}

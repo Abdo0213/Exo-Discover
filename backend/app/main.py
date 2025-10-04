@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import chat, predict, train
+from app.routes import chat, predict
 
 app = FastAPI(title="ML Model API", version="1.0.0")
 
@@ -16,7 +16,6 @@ app.add_middleware(
 # Include routers
 app.include_router(chat.router, prefix="/api/v1", tags=["chat"])
 app.include_router(predict.router, prefix="/api/v1", tags=["prediction"])
-app.include_router(train.router, prefix="/api/v1", tags=["training"])
 
 @app.get("/")
 async def root():

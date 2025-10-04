@@ -5,21 +5,21 @@ import ManualInput from '../components/Model/ManualInput';
 import styles from './styles/ModelPage.module.css';
 
 const ModelPage = () => {
-  const [activeTab, setActiveTab] = useState('prediction');
+  const [activeTab, setActiveTab] = useState('models');
 
   return (
     <div className={styles.modelPage}>
       <div className={styles.header}>
-        <h1>Exoplanet Detection Model</h1>
-        <p>Upload data or enter parameters manually to identify potential exoplanets</p>
+        <h1>Exoplanet Detection Models</h1>
+        <p>View model performance, upload CSV data, or enter parameters manually to identify potential exoplanets</p>
       </div>
       
       <div className={styles.tabs}>
         <button 
-          className={`${styles.tab} ${activeTab === 'prediction' ? styles.active : ''}`}
-          onClick={() => setActiveTab('prediction')}
+          className={`${styles.tab} ${activeTab === 'models' ? styles.active : ''}`}
+          onClick={() => setActiveTab('models')}
         >
-          Model Prediction
+          Model Performance
         </button>
         <button 
           className={`${styles.tab} ${activeTab === 'upload' ? styles.active : ''}`}
@@ -36,7 +36,7 @@ const ModelPage = () => {
       </div>
 
       <div className={styles.tabContent}>
-        {activeTab === 'prediction' && <ModelPrediction />}
+        {activeTab === 'models' && <ModelPrediction />}
         {activeTab === 'upload' && <DataUpload />}
         {activeTab === 'manual' && <ManualInput />}
       </div>
