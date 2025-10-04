@@ -330,3 +330,15 @@ export const moonData = {
     parent: 'Mars'
   }
 };
+
+export const planetAudio = {
+  Sun: '/audio/sun.mp3',
+  Mercury: '/audio/mercury.mp3',
+  Venus: '/audio/venus.mp3',
+  Earth: '/audio/earth.mp3',
+  Mars: '/audio/mars.mp3',
+  Jupiter: '/audio/jupiter.mp3',
+  Saturn: '/audio/saturn.mp3',
+  Uranus: '/audio/uranus.mp3',
+  Neptune: '/audio/neptune.mp3'
+};

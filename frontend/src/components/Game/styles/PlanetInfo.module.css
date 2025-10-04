@@ -195,3 +195,38 @@
     grid-template-columns: 1fr;
   }
 }
+
+.audioSection {
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.audioButton {
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  font-size: 24px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.audioButton:hover {
+  transform: scale(1.1);
+}
+
+.audioButton.audioPlaying {
+  background: linear-gradient(45deg, #ff6b6b 0%, #ee5a24 100%);
+}
+
+.audioLabel {
+  display: block;
+  font-size: 11px;
+  color: #ccc;
+  margin-top: 5px;
+}

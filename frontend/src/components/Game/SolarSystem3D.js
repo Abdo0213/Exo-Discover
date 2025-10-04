@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import * as THREE from 'three';
-import PlanetInfo from './PlanetInfo';
-import { planetData, planetFacts } from '../../data/gameData';
-import styles from './styles/SolarSystem3D.module.css';
+import React, { useRef, useEffect, useState, useCallback } from 'react'; 
+import * as THREE from 'three'; 
+import PlanetInfo from './PlanetInfo'; 
+import { planetData, planetFacts, planetAudio } from '../../data/gameData'; 
+import styles from './styles/SolarSystem3D.module.css'; 
 
-// Planet3D class - Using BasicMaterial instead of LambertMaterial since lighting isn't working
+// Planet3D class - Updated with animation support
 class Planet3D {
   constructor(name, data, scene) {
     this.name = name;
@@ -13,27 +13,49 @@ class Planet3D {
     this.rotationSpeed = 0.01;
     this.scene = scene;
     
-    // Use MeshLambertMaterial instead of LambertMaterial to ensure colors are visible
+    // Create geometry
     const geometry = new THREE.SphereGeometry(data.size, 32, 32);
-    const material = new THREE.MeshLambertMaterial({
-      color: data.color,
-      shininess: 15,
-      specular: 0x111111,
-      transparent: true,
-      opacity: 0.95
-    });
+    
+    // Create texture loader
+    const textureLoader = new THREE.TextureLoader();
+    
+    // Load texture based on planet name
+    let texture;
+    try {
+      // Try to load planet texture
+      texture = textureLoader.load(`/textures/planets/${name.toLowerCase()}.jpg`);
+    } catch (error) {
+      console.warn(`Texture not found for ${name}, using color fallback`);
+      texture = null;
+    }
+
+    // Create material with texture or fallback to color
+    // Use MeshBasicMaterial for simple textures without lighting
+    const material = texture 
+      ? new THREE.MeshBasicMaterial({
+          map: texture
+        })
+      : new THREE.MeshBasicMaterial({
+          color: data.color
+        });
     
     this.mesh = new THREE.Mesh(geometry, material);
-    this.mesh.position.set(
-      Math.cos(this.angle) * data.distance,
-      0,
-      Math.sin(this.angle) * data.distance
-    );
+    
+    // Calculate FINAL orbital position but don't set it yet
+    this.finalPosition = {
+      x: Math.cos(this.angle) * data.distance,
+      y: 0,
+      z: Math.sin(this.angle) * data.distance
+    };
+    
+    // Start at center (will be animated to position)
+    this.mesh.position.set(0, 0, 0);
+    this.mesh.visible = false; // Hide until animation starts
     
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
     
-    // Store planet info in userData
+    // Store planet info in userData with audio support
     const facts = planetFacts[name] || {};
     this.mesh.userData = {
       name: name,
@@ -46,20 +68,27 @@ class Planet3D {
       mass: data.mass,
       distance: data.distance,
       moons: [],
-      image: facts.image || null
+      image: facts.image || null,
+      hasAudio: !!planetAudio[name],
+      hasTexture: !!texture
     };
     
     scene.add(this.mesh);
     
-    // Create orbit line
+    // Create orbit line (make it invisible during intro)
     this.createOrbitLine();
+    this.orbitLine.visible = false;
     
-    // Create moons
+    // Create moons (but hide them during intro)
     this.createMoons();
+    this.moons.forEach(moon => {
+      moon.mesh.visible = false;
+    });
     
-    // Create rings for Saturn
+    // Create rings for Saturn with texture
     if (name === 'Saturn') {
       this.createRings();
+      if (this.rings) this.rings.visible = false;
     }
   }
   
@@ -88,13 +117,34 @@ class Planet3D {
   createMoons() {
     this.moons = [];
     const moonCount = this.data.moons;
+    const textureLoader = new THREE.TextureLoader();
     
     for (let i = 0; i < moonCount; i++) {
       const moonSize = Math.max(0.5, this.data.size * 0.15);
       const moonDistance = this.data.size + 8 + i * 5;
       
       const moonGeometry = new THREE.SphereGeometry(moonSize, 16, 16);
-      const moonMaterial = new THREE.MeshLambertMaterial({ color: 0xcccccc, shininess: 10 });
+      
+      // Try to load moon texture
+      let moonTexture;
+      try {
+        moonTexture = textureLoader.load('/textures/moons/moon.jpg');
+      } catch (error) {
+        moonTexture = null;
+      }
+
+      const moonMaterial = moonTexture
+        ? new THREE.MeshStandardMaterial({
+            map: moonTexture,
+            roughness: 0.9,
+            metalness: 0.1
+          })
+        : new THREE.MeshStandardMaterial({ 
+            color: 0xcccccc,
+            roughness: 0.9,
+            metalness: 0.1
+          });
+      
       const moonMesh = new THREE.Mesh(moonGeometry, moonMaterial);
       
       const moon = {
@@ -111,7 +161,9 @@ class Planet3D {
         name: moon.name,
         type: 'Moon',
         info: `${moon.name} is a moon of ${this.name}`,
-        parentPlanet: this.name
+        parentPlanet: this.name,
+        hasAudio: false,
+        hasTexture: !!moonTexture
       };
       
       this.moons.push(moon);
@@ -121,13 +173,30 @@ class Planet3D {
   }
   
   createRings() {
+    const textureLoader = new THREE.TextureLoader();
+    let ringTexture;
+    
+    try {
+      ringTexture = textureLoader.load('/textures/planets/saturn_ring.png');
+    } catch (error) {
+      console.warn('Saturn ring texture not found, using default material');
+      ringTexture = null;
+    }
+
     const ringGeometry = new THREE.RingGeometry(this.data.size + 2, this.data.size + 8, 32);
-    const ringMaterial = new THREE.MeshLambertMaterial({ 
-      color: 0xaaaaaa,
-      transparent: true,
-      opacity: 0.6,
-      side: THREE.DoubleSide
-    });
+    const ringMaterial = ringTexture 
+      ? new THREE.MeshStandardMaterial({
+          map: ringTexture,
+          transparent: true,
+          opacity: 0.8,
+          side: THREE.DoubleSide
+        })
+      : new THREE.MeshStandardMaterial({  
+          color: 0xaaaaaa,
+          transparent: true,
+          opacity: 0.6,
+          side: THREE.DoubleSide
+        });
     
     this.rings = new THREE.Mesh(ringGeometry, ringMaterial);
     this.rings.rotation.x = -Math.PI / 2 + 0.3;
@@ -157,9 +226,24 @@ class Planet3D {
     }
   }
   
+  // Method to start the planet's orbit after intro
+  startOrbit() {
+    this.mesh.visible = true;
+    this.mesh.position.set(this.finalPosition.x, this.finalPosition.y, this.finalPosition.z);
+    
+    // Show orbit line and moons
+    if (this.orbitLine) this.orbitLine.visible = true;
+    this.moons.forEach(moon => {
+      moon.mesh.visible = true;
+    });
+    if (this.rings) this.rings.visible = true;
+  }
+  
   destroy() {
     this.scene.remove(this.mesh);
-    this.scene.remove(this.orbitLine);
+    if (this.orbitLine) {
+      this.scene.remove(this.orbitLine);
+    }
     
     for (let moon of this.moons) {
       this.scene.remove(moon.mesh);
@@ -177,6 +261,8 @@ const SolarSystem3D = () => {
   const [globalSpeed, setGlobalSpeed] = useState(1);
   const [deletedPlanets, setDeletedPlanets] = useState([]);
   const [planetsList, setPlanetsList] = useState([]);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false); // Audio state
+  const [currentAudioName, setCurrentAudioName] = useState(null);
 
   // Refs to maintain Three.js objects between renders
   const sceneRef = useRef(null);
@@ -190,6 +276,87 @@ const SolarSystem3D = () => {
   const mouseRef = useRef(new THREE.Vector2());
   const currentGlobalSpeedRef = useRef(1);
   const cameraShakeRef = useRef({ intensity: 0, duration: 0 });
+  const isIntroSequenceRef = useRef(false);
+  const introIndexRef = useRef(0);
+  const introOrderRef = useRef(['Sun', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']);
+
+  // Audio ref
+  const currentAudioRef = useRef(null);
+
+  // Audio functions - with toggle support and state updates
+  const playPlanetAudio = useCallback((planetName) => {
+    const audioPath = planetAudio[planetName];
+    if (!audioPath) {
+      console.log('No audio available for ' + planetName);
+      return false;
+    }
+
+    // If the same planet's audio is loaded
+    if (currentAudioName === planetName && currentAudioRef.current) {
+      // If it's currently playing -> pause (toggle off)
+      if (!currentAudioRef.current.paused) {
+        currentAudioRef.current.pause();
+        setIsAudioPlaying(false);
+        setCurrentAudioName(null);
+        return false; // now paused
+      }
+
+      // If same audio file is loaded but paused -> resume play
+      currentAudioRef.current.play().catch(err => {
+        console.error('Error resuming audio:', err);
+        setIsAudioPlaying(false);
+        setCurrentAudioName(null);
+      });
+      setIsAudioPlaying(true);
+      return true;
+    }
+
+    // Different audio: stop previous if exists
+    if (currentAudioRef.current) {
+      try {
+        currentAudioRef.current.pause();
+        currentAudioRef.current.currentTime = 0;
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // Load and play new audio
+    const audio = new Audio(audioPath);
+    currentAudioRef.current = audio;
+    setCurrentAudioName(planetName);
+    setIsAudioPlaying(true);
+
+    audio.play().catch(error => {
+      console.error('Error playing audio:', error);
+      setIsAudioPlaying(false);
+      setCurrentAudioName(null);
+    });
+
+    // Cleanup when it ends or errors
+    audio.onended = () => {
+      setIsAudioPlaying(false);
+      setCurrentAudioName(null);
+    };
+    audio.onerror = () => {
+      setIsAudioPlaying(false);
+      setCurrentAudioName(null);
+    };
+
+    return true; // now playing
+  }, [currentAudioName]);
+
+  const stopAudio = useCallback(() => {
+    if (currentAudioRef.current) {
+      try {
+        currentAudioRef.current.pause();
+        currentAudioRef.current.currentTime = 0;
+      } catch (e) {}
+      currentAudioRef.current = null;
+    }
+    setIsAudioPlaying(false);
+    setCurrentAudioName(null);
+  }, []);
 
   // Create starfield
   const createStarfield = useCallback((scene, starCount = 10000) => {
@@ -220,7 +387,7 @@ const SolarSystem3D = () => {
     
     for (let i = 0; i < particleCount; i++) {
       const particleGeometry = new THREE.SphereGeometry(Math.random() * 2 + 0.5, 8, 8);
-      const particleMaterial = new THREE.MeshLambertMaterial({
+      const particleMaterial = new THREE.MeshBasicMaterial({
         color: new THREE.Color().setHSL(Math.random() * 0.2 + 0.05, 1, 0.5 + Math.random() * 0.5)
       });
       
@@ -399,6 +566,14 @@ const SolarSystem3D = () => {
   const handleClick = useCallback((event) => {
     if (!rendererRef.current || !cameraRef.current) return;
     
+    // Check if click was on the info panel or UI elements
+    const uiPanel = document.querySelector(`.${styles.uiPanel}`);
+    const planetInfo = document.querySelector(`.${styles.planetInfo}`);
+    
+    if (uiPanel?.contains(event.target) || planetInfo?.contains(event.target)) {
+      return; // Ignore clicks on UI elements
+    }
+    
     const rect = rendererRef.current.domElement.getBoundingClientRect();
     mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouseRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -475,35 +650,179 @@ const SolarSystem3D = () => {
     }
   }, [createExplosion]);
 
-  // Create sun
+  // Create sun - UPDATED VERSION (remove helper)
   const createSun = useCallback((scene) => {
-    // Sun visible mesh
+    const textureLoader = new THREE.TextureLoader();
+    let sunTexture;
+    
+    try {
+      sunTexture = textureLoader.load('/textures/planets/sun.jpg');
+    } catch (error) {
+      console.warn('Sun texture not found, using default material');
+      sunTexture = null;
+    }
+
+    // Sun visible mesh - Use MeshBasicMaterial for self-illuminated objects
     const sunGeometry = new THREE.SphereGeometry(20, 32, 32);
-    const sunMaterial = new THREE.MeshBasicMaterial({  
-      color: 0xffaa00,
-      emissive: 0xff4400,
-      emissiveIntensity: 0.3 
-    });
+    const sunMaterial = sunTexture
+      ? new THREE.MeshBasicMaterial({
+          map: sunTexture
+        })
+      : new THREE.MeshBasicMaterial({    
+          color: 0xffaa00
+        });
+    
     const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-    sun.userData = { name: "Sun" };
+    
+    // Add sun data with audio support
+    sun.userData = {
+      ...planetFacts.Sun,
+      hasAudio: !!planetAudio.Sun,
+      hasTexture: !!sunTexture
+    };
+    
     scene.add(sun);
     sunRef.current = sun;
 
-    // VERY strong point light at the sun’s position
-    const sunLight = new THREE.PointLight(0xffffff, 5.0, 50000); // distance huge
+    // Strong point light at the sun's position
+    const sunLight = new THREE.PointLight(0xffffff, 2.0, 2000);
     sunLight.position.set(0, 0, 0);
     sunLight.castShadow = true;
     scene.add(sunLight);
 
-    // Helper so you see where the light actually is
-    const helper = new THREE.PointLightHelper(sunLight, 10);
-    scene.add(helper);
-
-    // Small ambient so the dark side isn’t fully black
+    // Small ambient so the dark side isn't fully black
     const ambient = new THREE.AmbientLight(0xffffff, 0.15);
     scene.add(ambient);
   }, []);
 
+  // Intro sequence functions
+  const startIntroSequence = useCallback(() => {
+    isIntroSequenceRef.current = true;
+    introIndexRef.current = 0;
+    planetsRef.current = [];
+    
+    // Hide the sun initially
+    if (sunRef.current) {
+      sunRef.current.scale.set(0, 0, 0);
+    }
+    
+    // Start with the sun after a brief delay
+    setTimeout(() => {
+      introduceCelestialBody();
+    }, 1000);
+  }, []);
+
+  const introduceCelestialBody = useCallback(() => {
+    const currentName = introOrderRef.current[introIndexRef.current];
+    
+    if (currentName === 'Sun') {
+      animateSunAppearance();
+    } else {
+      const planet = new Planet3D(currentName, planetData[currentName], sceneRef.current);
+      planetsRef.current.push(planet);
+      animatePlanetAppearance(planet);
+    }
+  }, []);
+
+  const animateSunAppearance = useCallback(() => {
+    if (!sunRef.current) return;
+    
+    // Show info panel with audio
+    const sunData = {
+      ...sunRef.current.userData,
+      name: 'Sun'
+    };
+    setSelectedPlanet(sunData);
+    
+    // Start sun below the scene
+    sunRef.current.position.y = -200;
+    sunRef.current.scale.set(1, 1, 1);
+    
+    // Animate sun rising up to center
+    let currentY = -200;
+    const animateUp = setInterval(() => {
+      currentY += 5;
+      sunRef.current.position.y = currentY;
+      
+      if (currentY >= 0) {
+        clearInterval(animateUp);
+        sunRef.current.position.y = 0;
+        
+        // Wait 4 seconds then move to next
+        setTimeout(() => {
+          setSelectedPlanet(null);
+          introIndexRef.current++;
+          if (introIndexRef.current < introOrderRef.current.length) {
+            introduceCelestialBody();
+          } else {
+            finishIntroSequence();
+          }
+        }, 4000);
+      }
+    }, 30);
+  }, [introduceCelestialBody]);
+
+  const animatePlanetAppearance = useCallback((planet) => {
+    // Show info panel with audio
+    setSelectedPlanet(planet.mesh.userData);
+    
+    // Make planet visible for animation
+    planet.mesh.visible = true;
+    
+    // Store the FINAL orbital position (where it should end up)
+    const finalPosition = planet.finalPosition;
+    
+    // Start planet below the scene (centered below)
+    const startPosition = { x: 0, y: -300, z: 0 };
+    planet.mesh.position.set(startPosition.x, startPosition.y, startPosition.z);
+    planet.mesh.scale.set(1, 1, 1);
+    
+    // Animate planet rising up AND moving to orbital position
+    let progress = 0;
+    const duration = 2000; // 2 seconds
+    const startTime = Date.now();
+    
+    const animateToOrbit = () => {
+      const currentTime = Date.now();
+      progress = (currentTime - startTime) / duration;
+      
+      // Easing function for smooth animation
+      const easedProgress = 1 - Math.pow(1 - progress, 3); // Cubic ease out
+      
+      if (progress < 1) {
+        const currentX = startPosition.x + (finalPosition.x - startPosition.x) * easedProgress;
+        const currentY = startPosition.y + (finalPosition.y - startPosition.y) * easedProgress;
+        const currentZ = startPosition.z + (finalPosition.z - startPosition.z) * easedProgress;
+        
+        planet.mesh.position.set(currentX, currentY, currentZ);
+        requestAnimationFrame(animateToOrbit);
+      } else {
+        planet.mesh.position.set(finalPosition.x, finalPosition.y, finalPosition.z);
+        
+        // Wait 4 seconds then move to next
+        setTimeout(() => {
+          setSelectedPlanet(null);
+          introIndexRef.current++;
+          if (introIndexRef.current < introOrderRef.current.length) {
+            introduceCelestialBody();
+          } else {
+            finishIntroSequence();
+          }
+        }, 4000);
+      }
+    };
+    
+    animateToOrbit();
+  }, [introduceCelestialBody]);
+
+  const finishIntroSequence = useCallback(() => {
+    isIntroSequenceRef.current = false;
+    // Start all planets orbiting
+    planetsRef.current.forEach(planet => {
+      planet.startOrbit();
+    });
+    setPlanetsList(planetsRef.current.map(p => p.name));
+  }, []);
 
   // Initialize the solar system
   const initializeSolarSystem = useCallback(() => {
@@ -539,12 +858,6 @@ const SolarSystem3D = () => {
     // Create sun
     createSun(scene);
 
-    // Create planets
-    const planetNames = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
-    const planets = planetNames.map(name => new Planet3D(name, planetData[name], scene));
-    planetsRef.current = planets;
-    setPlanetsList(planetNames);
-
     // Setup camera controls
     const cleanupCameraControls = setupCameraControls(camera, renderer);
 
@@ -552,15 +865,20 @@ const SolarSystem3D = () => {
     renderer.domElement.addEventListener('click', handleClick);
     renderer.domElement.addEventListener('mousemove', handleMouseMove);
 
+    // Start intro sequence
+    startIntroSequence();
+
     // Animation loop
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate);
       
-      // Update planets
-      planetsRef.current.forEach(planet => planet.update(currentGlobalSpeedRef.current));
-      
-      // Check for collisions
-      checkCollisions();
+      // Update planets (only if not in intro sequence)
+      if (!isIntroSequenceRef.current) {
+        planetsRef.current.forEach(planet => planet.update(currentGlobalSpeedRef.current));
+        
+        // Check for collisions
+        checkCollisions();
+      }
       
       // Update particles
       updateParticles();
@@ -596,6 +914,7 @@ const SolarSystem3D = () => {
         rendererRef.current.domElement.removeEventListener('mousemove', handleMouseMove);
       }
       cleanupCameraControls();
+      stopAudio(); // Stop any playing audio
       
       if (animationIdRef.current) {
         cancelAnimationFrame(animationIdRef.current);
@@ -611,7 +930,7 @@ const SolarSystem3D = () => {
       
       renderer.dispose();
     };
-  }, [createStarfield, createSun, setupCameraControls, handleClick, handleMouseMove, checkCollisions, updateParticles, updateCameraShake]);
+  }, [createStarfield, createSun, setupCameraControls, handleClick, handleMouseMove, checkCollisions, updateParticles, updateCameraShake, startIntroSequence, stopAudio]);
 
   // Initialize only once on mount
   useEffect(() => {
@@ -640,18 +959,18 @@ const SolarSystem3D = () => {
       cameraRef.current.lookAt(0, 0, 0);
     }
     
-    // Create new planets
-    const planetNames = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
-    const planets = planetNames.map(name => new Planet3D(name, planetData[name], sceneRef.current));
-    planetsRef.current = planets;
-    setPlanetsList(planetNames);
+    // Stop any audio
+    stopAudio();
+    
+    // Start intro sequence
+    startIntroSequence();
     
     setDeletedPlanets([]);
     setSelectedPlanet(null);
     setGlobalSpeed(1);
     currentGlobalSpeedRef.current = 1;
     cameraShakeRef.current = { intensity: 0, duration: 0 };
-  }, []);
+  }, [startIntroSequence, stopAudio]);
 
   const handleDeletePlanet = useCallback((planetName) => {
     const planets = planetsRef.current;
@@ -680,6 +999,7 @@ const SolarSystem3D = () => {
     if (planetData[planetName]) {
       const planet = new Planet3D(planetName, planetData[planetName], sceneRef.current);
       planetsRef.current.push(planet);
+      planet.startOrbit(); // Start orbiting immediately
       setDeletedPlanets(prev => prev.filter(name => name !== planetName));
       setPlanetsList(prev => [...prev, planetName]);
     }
@@ -776,11 +1096,16 @@ const SolarSystem3D = () => {
         </details>
       </div>
       
-      {/* Planet Info Panel */}
+      {/* Planet Info Panel with Audio Support */}
       {selectedPlanet && (
-        <PlanetInfo 
-          planet={selectedPlanet} 
-          onClose={() => setSelectedPlanet(null)} 
+        <PlanetInfo
+          planet={selectedPlanet}
+          onClose={() => {
+            setSelectedPlanet(null);
+            stopAudio();
+          }}
+          onPlayAudio={() => playPlanetAudio(selectedPlanet.name)}
+          isAudioPlaying={isAudioPlaying && currentAudioName === selectedPlanet.name}
         />
       )}
     </div>
